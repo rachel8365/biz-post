@@ -1,0 +1,82 @@
+:root {
+    --background-image:
+        url("/public/image/background.jpg");
+    --color-gray: #ededed;
+    --color-secondary: #c2caca88;
+    --color-modal: #ededed;
+    --color-title: #ededed;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-grey0: #454e56;
+    --color-grey-1:
+        --color-grey-2: #b2becd;
+    --color-grey-3: #6c7983;
+
+    --color-grey-5: #2a2e35;
+    --color-grey-6: #12181b;
+    --box-shadow-1: 0 3px 15px rgba(0, 0, 0, 0.3);
+    --box-shadow-2: 0 2px 5px rgba(248, 248, 248, 0.2);
+    --hover-color: #fff;
+}
+.dark {
+    --background-image: url("/public/image/background-dark.jpg");
+    --color-gray: #333;
+    --color-secondary: #586573;
+    --color-modal: #414952;
+    --color-title: #12181b;
+    --color-white: #000;
+    --color-black: #fff;
+    --color-grey0: #f8f8f8;
+    --color-grey-1: #6c7983;
+    --color-grey-2: #6c7983;
+    --color-grey-3: #6c7983;
+    --color-grey-4: #454e56;
+    --color-grey-5: #f8f8f8;
+    --color-grey-6: #12181b;
+    --br-sm-2: 14px;
+    --box-shadow-1: 0 3px 15px rgba(0, 0, 0, 0.3);
+    --box-shadow-2: 0 2px 5px rgba(248, 248, 248, 0.2);
+    --hover-color: #fff;
+}
+
+.App {
+    background: var(--background-image);
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: 'Dancing Script', cursive;
+    color: var(--color-black);
+}
+
+.bgBlur {
+    line-height: 1.5;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.homeColor {
+    color: var(--color-grey0);
+}
+
+.aboutColor {
+    /* background-color: var(--color-secondary);
+    color: var(--color-gray); */
+}
+
+/* Add more styles for other components as needed */
+
+.card {
+    background-color: var(--color-black);
+    color: var(--color-title);
+}
+
+.formColor {
+    color: #000;
+}
+
+.crad {
+    color: var(--color-title);
+}
+
+.footer {
+    background-color: var(--color-white);
+}
