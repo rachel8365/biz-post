@@ -12,7 +12,7 @@ interface NavbarProps {
 const Navbar: FunctionComponent<NavbarProps> = ({ userInfo, setUserInfo, darkMode, setDarkMode }) => {
   let theme = useContext(SiteTheme)
   let navigate = useNavigate()
- 
+
   return (
     <>
       <nav className="navbar navbar-expand-lg" data-bs-theme={`${theme}`}
@@ -39,31 +39,30 @@ const Navbar: FunctionComponent<NavbarProps> = ({ userInfo, setUserInfo, darkMod
                 <NavLink className="nav-link" to="/pageNotFound">SANDBOX</NavLink>
               )}
 
-              <div className=" navMl d-flex ">
-
-                {userInfo.email == false && <>
-                  <NavLink className="nav-link" to="/register">SIGNUP_</NavLink>
-                  <NavLink className="nav-link" to="/login">LOGIN</NavLink>
-                </>}
-                <div onClick={() => {
-                  setDarkMode(!darkMode);
-                  localStorage.setItem("darkMode", JSON.stringify(!darkMode));
-                }} >
-                  {darkMode ? (< i className="fa-solid fa-moon fa-xl " ></i >) : (<i className="fa-solid fa-sun fa-xl" ></i>)}
-                </div>
-                {userInfo.email && (
-                  <>
-                    <div>
-                      <img src="/image/user.png" alt="user" style={{ width: "50px", height: "50px" }} onClick={() => {
-                        alert("Click OK if you want to logout")
-                        sessionStorage.removeItem("userInfo")
-                        setUserInfo({ email: false, role: false })
-                        navigate("/cards")
-                      }} />
-                    </div>
-                  </>
-                )}
+              {userInfo.email == false && <>
+                <NavLink className="nav-link" to="/register">SIGNUP</NavLink>
+                <NavLink className="nav-link" to="/login">LOGIN</NavLink>
+              </>}
+              <div onClick={() => {
+                setDarkMode(!darkMode);
+                localStorage.setItem("darkMode", JSON.stringify(!darkMode));
+              }} >
+                {darkMode ? (< i className="fa-solid fa-moon fa-xl " ></i >) : (<i className="fa-solid fa-sun fa-xl" ></i>)}
               </div>
+              {userInfo.email && (
+                <>
+                  <div>
+                    <img src="/image/user.png" alt="user" style={{ width: "50px", height: "50px" }} onClick={() => {
+                      alert("Click OK if you want to logout")
+                      sessionStorage.removeItem("userInfo")
+                      sessionStorage.removeItem("token")
+                      setUserInfo({ email: false, role: false })
+                      navigate("/cards")
+                    }} />
+                  </div>
+                </>
+              )}
+
 
 
             </div>

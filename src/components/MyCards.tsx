@@ -3,7 +3,7 @@ import Card from "../interfaces/Card";
 import { deleteCard, getCardByUserId } from "../services/cardsService";
 import { successMsg } from "../services/feedbackService";
 import { Link, useNavigate } from "react-router-dom";
-import { userInfo } from "os";
+
 
 interface MyCardsProps {
   userInfo: any
@@ -14,7 +14,7 @@ const MyCards: FunctionComponent<MyCardsProps> = ({ userInfo }) => {
   let [cardsChange, setCardsChange] = useState<boolean>(false)
   let [addCard, setAddCard] = useState<Card[]>([])
   useEffect(() => {
-    let userId: number = JSON.parse(sessionStorage.getItem("userInfo") as string).id
+    let userId = JSON.parse(sessionStorage.getItem("userInfo") as string).id
     getCardByUserId(userId)
       .then((res) => setAddCard(res.data))
       .catch((err) => console.log(err)
@@ -25,7 +25,7 @@ const MyCards: FunctionComponent<MyCardsProps> = ({ userInfo }) => {
     setCardsChange(!cardsChange)
   }
 
-  let handelDelete = (id: number) => {
+  let handelDelete = (id: string) => {
     if (window.confirm("Are you sure?"))
       deleteCard(id)
         .then((res) => {
@@ -46,8 +46,8 @@ const MyCards: FunctionComponent<MyCardsProps> = ({ userInfo }) => {
           <div className="container ">
             <div className="row">
               {addCard.map((card: Card) => (
-                <div key={card.id} className="card col-md-4 mx-3 mt-5 pt-2 mb-5 border-raduse" style={{ width: "25rem" }}>
-                  <img src={card.imageUrl} className="card-img-top" alt={card.imageAlt} onClick={() => navigate(`/cards/card-detailse/${card.id}`)} />
+                <div key={card._id} className="card col-md-4 mx-3 mt-5 pt-2 mb-5 border-raduse" style={{ width: "25rem" }}>
+                  <img src={card.imageUrl} className="card-img-top" alt={card.imageAlt} onClick={() => navigate(`/cards/card-detailse/${card._id}`)} />
                   <div className="card-body">
                     <h5 className="card-title">{card.title}</h5>
                     <p className="card-text">{card.subtitle}</p>
@@ -59,8 +59,8 @@ const MyCards: FunctionComponent<MyCardsProps> = ({ userInfo }) => {
                   {userInfo.role == "Admin" || userInfo.role == "business" ? (
                     <ul className="mt-3 d-flex crad">
 
-                      <Link to="" className="btn"><i className="fa-solid fa-trash crad" onClick={() => handelDelete(card.id as number)}></i></Link>
-                      <Link to={`update/${card.id}`} className="btn"><i className="fa-solid fa-pen mx-3 crad"></i></Link>
+                      <Link to="" className="btn"><i className="fa-solid fa-trash crad" onClick={() => handelDelete(card._id as string)}></i></Link>
+                      <Link to={`update/${card._id}`} className="btn"><i className="fa-solid fa-pen mx-3 crad"></i></Link>
                     </ul>
                   ) : (null)}
 

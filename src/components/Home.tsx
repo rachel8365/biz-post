@@ -8,6 +8,7 @@ import User from "../interfaces/User";
 import { SiteTheme, UserInfo } from "../App";
 import { AxiosResponse } from "axios";
 
+
 interface HomeProps {
     userInfo: UserInfo;
     setUserInfo: Dispatch<SetStateAction<UserInfo>>;
@@ -19,34 +20,53 @@ interface HomeProps {
 const Home: FunctionComponent<HomeProps> = ({ userInfo, setUserInfo, cards, setCards }) => {
     let theme = useContext(SiteTheme)
     let navigate = useNavigate()
-    let [favoriteIds, setFavoriteIds] = useState<number[]>([])
+    let [favoriteIds, setFavoriteIds] = useState<string[]>([])
+    const [user, setUser] = useState<User | undefined>()
     useEffect(() => {
+        if (sessionStorage.getItem("token") === null || userInfo.id === undefined) {
+            getCards()
+                .then(response => setCards(response.data));
+            return;
+        }
+
         const promises = [
             getCards() as Promise<AxiosResponse<Card[], any>>,
-            userInfo.id !== undefined ?
-                getUserById(userInfo.id) as Promise<AxiosResponse<User[], any>> :
-                undefined
+            getUserById(userInfo.id) as Promise<AxiosResponse<User, any>>
         ] as const;
-        Promise.all(promises).then(([cardsResponse, userResponse]) => {
-            setFavoriteIds(() => userResponse?.data[0]?.favCards || [])
-            setCards(cardsResponse.data)
-        })
-            .catch((err) => console.log(err)
-            )
+        Promise.all(promises)
+            .then(([cardsResponse, userResponse]) => {
+                setUser(userResponse.data)
+                setCards(cardsResponse.data)
+            })
+            .catch(err => console.log(err))
     }, [userInfo.id]);
+
+
+    const isFavorite = (someCardId: string | undefined) => {
+        if (!someCardId) return false
+        const userCards = user?.favCards as Card[] ?? []
+        return userCards.findIndex(card => card._id === someCardId) !== -1
+    }
 
     let addToFavorite = (card: Card) => {
         let id = JSON.parse(sessionStorage.getItem("userInfo") as string).id;
-        if (card.id === undefined) { return }
-        const cardId = card.id;
-        if (favoriteIds.includes(cardId)) {
-            successMsg("The card is already in favorites, You can remove in the fav - card tab")
-            return;
+        if (card._id === undefined) { return }
+        const cardId = card._id;
+        let removed = false
+        if (user && user.favCards?.find(card => card._id === cardId)) {
+            removed = true
+            let cards = user.favCards
+            let idx = user.favCards.findIndex(c => c._id === cardId)
+            cards.splice(idx, 1)
+            setUser({ ...user, favCards: cards } as any)
+        } else {
+            setUser({ ...user, favCards: [...user?.favCards as any, card] } as any)
+
         }
+
         addCardToFav(id, cardId)
             .then((res) => {
-                setFavoriteIds(prev => [...prev, cardId])
-                successMsg("Added to favorites");
+                successMsg(removed ? "Card removed from favorites" : "Card added favorite");
             })
             .catch((err) => console.log(err))
     }
@@ -65,8 +85,8 @@ const Home: FunctionComponent<HomeProps> = ({ userInfo, setUserInfo, cards, setC
                     {cards.length ? (
                         <div className="row">
                             {cards.map((card: Card) => (
-                                <div key={card.id} className="card col-md-4 mx-3   mt-5 mb-5 border-raduse" style={{ width: "25rem" }} >
-                                    <img src={card.imageUrl} className="card-img-top mt-3 h-50" alt={card.imageAlt} onClick={() => navigate(`card-detailse/${card.id}`)} />
+                                <div key={card._id} className="card col-md-4 mx-3   mt-5 mb-5 border-raduse" style={{ width: "25rem" }} >
+                                    <img src={card.imageUrl} className="card-img-top mt-3 h-50" alt={card.imageAlt} onClick={() => navigate(`card-detailse/${card._id}`)} />
                                     <div className="card-body">
                                         <h5 className="card-title">{card.title}</h5>
                                         <p className="card-text">{card.subtitle}</p>
@@ -78,7 +98,7 @@ const Home: FunctionComponent<HomeProps> = ({ userInfo, setUserInfo, cards, setC
                                     <div className="card-body">
                                         {userInfo.email && (<>
                                             <div onClick={() => addToFavorite(card)}>
-                                                {!favoriteIds.includes(card.id ?? -1) ?
+                                                {!isFavorite(card._id) ?
                                                     (<i className="fa-solid fa-heart"></i>)
                                                     :
                                                     (<i className="fa-solid fa-heart" style={{ color: "#ff0000" }}></i>)}

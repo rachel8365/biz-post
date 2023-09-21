@@ -1,5 +1,5 @@
 export default interface Card {
-    id?: number;
+    _id?: string;
     title: string;
     subtitle: string;
     description: string;
@@ -14,6 +14,5 @@ export default interface Card {
     street: string;
     houseNumber: number;
     zip?: number;
-    userId?: number;
-    heart?: boolean;
+    userId?: string;
 }

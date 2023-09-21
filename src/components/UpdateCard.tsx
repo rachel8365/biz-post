@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Card from "../interfaces/Card";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { getCardByCardId, updateCard } from "../services/cardsService";
+import { getCardByCardId, getCardDetails, updateCard } from "../services/cardsService";
 import { successMsg } from "../services/feedbackService";
 
 interface UpdateCardProps { }
@@ -11,13 +11,13 @@ const UpdateCard: FunctionComponent<UpdateCardProps> = () => {
     let navigate = useNavigate()
     let { id } = useParams();
     useEffect(() => {
-        getCardByCardId(Number(id))
+        getCardDetails(id as string)
             .then((res) => setCard(res.data))
             .catch((err) => console.log(err)
             )
     }, []);
     let [card, setCard] = useState<Card>({
-        id: 0,
+        /*    _id: "", */
         title: "",
         subtitle: "",
         description: "",
@@ -32,11 +32,11 @@ const UpdateCard: FunctionComponent<UpdateCardProps> = () => {
         street: "",
         houseNumber: 0,
         zip: 0,
-        userId: 0,
+        userId: "",
     })
     let formik = useFormik({
         initialValues: {
-            id: card.id,
+            /*  id: card._id, */
             title: card.title,
             subtitle: card.subtitle,
             description: card.description,
@@ -55,10 +55,10 @@ const UpdateCard: FunctionComponent<UpdateCardProps> = () => {
         },
         enableReinitialize: true,
         validationSchema: yup.object({
-            id: yup.number(),
+            /* id: yup.string(), */
             title: yup.string().required(),
             subtitle: yup.string().required(),
-            description: yup.string().required().max(100),
+            description: yup.string().required().max(200),
             phone: yup.string().required().min(9),
             email: yup.string().required().email("Pleade enter invalid email"),
             web: yup.string(),
@@ -70,10 +70,10 @@ const UpdateCard: FunctionComponent<UpdateCardProps> = () => {
             street: yup.string().required(),
             houseNumber: yup.number().required(),
             zip: yup.number(),
-            userId: yup.number(),
+            userId: yup.string(),
         }),
         onSubmit: (values) => {
-            updateCard(values, Number(id))
+            updateCard(values, id as string)
                 .then((res) => {
                     navigate("/my-cards")
                     successMsg("Card updated successfully!")

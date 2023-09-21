@@ -3,13 +3,14 @@ import { FunctionComponent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup"
 import { addCard } from "../services/cardsService";
-import { successMsg } from "../services/feedbackService";
+import { errorMsg, successMsg } from "../services/feedbackService";
 
 interface AddCardProps { }
 const AddCard: FunctionComponent<AddCardProps> = () => {
     let navigate = useNavigate();
     let formik = useFormik({
         initialValues: {
+            userId: 0,
             title: "",
             subtitle: "",
             description: "",
@@ -24,13 +25,12 @@ const AddCard: FunctionComponent<AddCardProps> = () => {
             street: "",
             houseNumber: 0,
             zip: 0,
-            userId: 0,
-            heart: false
+
         },
         validationSchema: yup.object({
             title: yup.string().required(),
             subtitle: yup.string().required(),
-            description: yup.string().required().max(100),
+            description: yup.string().required().max(150),
             phone: yup.string().required().min(9),
             email: yup.string().required().email("Pleade enter invalid email"),
             web: yup.string(),
@@ -45,13 +45,16 @@ const AddCard: FunctionComponent<AddCardProps> = () => {
         }
         ),
         onSubmit: (values) => {
-            let userId: number = JSON.parse(sessionStorage.getItem("userInfo") as string).id
+            let userId = JSON.parse(sessionStorage.getItem("userInfo") as string).id
             addCard({ ...values, userId })
                 .then((res) => {
                     navigate("/cards")
                     successMsg("Added successfuly!")
                 })
-                .catch((err) => console.log(err)
+                .catch((err) => {
+                    errorMsg("Something is wrong, check the data again")
+                    console.log(err)
+                }
                 )
         }
     })

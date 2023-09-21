@@ -1,35 +1,32 @@
 import axios from "axios";
 import User from "../interfaces/User";
-import Card from "../interfaces/Card";
+import jwt_decode from "jwt-decode"
 
-let api: string = `${process.env.REACT_APP_API}/users`;
+let api: string = `${process.env.REACT_APP_API}`;
 
 //login
 export function checkUser(userToCheck: User) {
-    return axios.get(`${api}?email=${userToCheck.email}&password=${userToCheck.password}`);
+    return axios.post(`${api}/login`, userToCheck);
 }
 
 //register
 export function addUser(newUser: User) {
-    return axios.post(api, newUser);
+    return axios.post(`${api}/register`, newUser);
 }
 
-//get card by user id
-export function getUserById(id: number) {
-    return axios.get(`${api}?id=${id}`)
+//get user by user id
+export function getUserById(id: string) {
+    return axios.get(`${api}/users/${id}`,
+        { headers: { Authorization: JSON.parse(sessionStorage.getItem("token") as string).token } })
 }
 
-
-//add to arrey fevorite
-export async function addCardToFav(userId: number, cardId: number) {
+// add card to array favorite
+export async function addCardToFav(userId: string, cardId: string) {
     try {
-        let res = await getUserById(userId);
-        const favCards = res.data[0].favCards;
-        if (!favCards.includes(cardId)) {
-            favCards.push(cardId)
-        }
-        return axios.patch(`${api}/${res.data[0].id}`, {
-            favCards
+        const token = JSON.parse(sessionStorage.getItem("token") as string).token
+        return axios.put(`${api}/users/${userId}/${cardId}`, token, {
+            headers: { "Authorization": token },
+
         });
     } catch (error) {
         console.log(error);
@@ -37,6 +34,12 @@ export async function addCardToFav(userId: number, cardId: number) {
 }
 
 //updateUser
-export function updateUser(updateUser: User, id: number) {
+export function updateUser(updateUser: User, id: string) {
     return axios.put(`${api}/${id}`, updateUser)
+}
+
+//get token details
+export function getTokenDetails() {
+    let token = JSON.parse(sessionStorage.getItem("token") as string).token;
+    return jwt_decode(token);
 }

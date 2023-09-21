@@ -1,5 +1,4 @@
 import { createContext, useState } from 'react';
-/* import './App.css'; */
 import Login from './components/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import PageNotFound from './components/PageNotFound';
@@ -18,7 +17,7 @@ import Footer from './components/Footer';
 import './styles.css';
 
 export interface UserInfo {
-  id?: number,
+  id?: string,
   email: string | false,
   role: 'Admin' | 'business' | 'regular'
 }
@@ -51,10 +50,9 @@ function App() {
             <Routes>
               <Route path='/' element={<Home userInfo={userInfo} setUserInfo={setUserInfo} cards={cards} setCards={setCards} />} />
               <Route path='/cards' element={<Home userInfo={userInfo} setUserInfo={setUserInfo} cards={cards} setCards={setCards} />} />
-              <Route path='/login' element={<Login setUserInfo={setUserInfo} />} />
+              <Route path="/login" element={<Login setUserInfo={setUserInfo} />} />
               <Route path='/cards/card-detailse/:id' element={<CardDetailse cards={cards} setCards={setCards} />} />
               <Route path='/about' element={<About userInfo={userInfo} />} />
-
               <Route path='/register' element={<Register setUserInfo={setUserInfo} />} />
               <Route path='/favourites' element={<Favourites userInfo={userInfo} />} />
               <Route path='/cards/new' element={<AddCard />} />

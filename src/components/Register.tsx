@@ -2,8 +2,8 @@ import { useFormik } from "formik";
 import { FunctionComponent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { addUser } from "../services/usersService";
-import { successMsg } from "../services/feedbackService";
+import { addUser, getTokenDetails } from "../services/usersService";
+import { errorMsg, successMsg } from "../services/feedbackService";
 interface RegisterProps {
     setUserInfo: Function
 }
@@ -54,16 +54,24 @@ const Register: FunctionComponent<RegisterProps> = ({ setUserInfo }) => {
                 .then((res) => {
                     navigate("/cards")
                     successMsg(`Hi ${values.email} The connection was made successfully`)
+                    sessionStorage.setItem("token",
+                        JSON.stringify({
+                            token: res.data
+                        })
+                    )
                     sessionStorage.setItem("userInfo", JSON.stringify({
-                        email: res.data.email,
-                        role: res.data.role,
-                        id: res.data.id
+                        email: (getTokenDetails() as any).email,
+                        role: (getTokenDetails() as any).role,
+                        id: (getTokenDetails() as any)._id
                     }))
                     setUserInfo(
                         JSON.parse(sessionStorage.getItem("userInfo") as string)
                     )
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => {
+                    errorMsg("Something is wrong, check the data again")
+                    console.log(err)
+                })
         }
     })
     useEffect(() => {
@@ -221,7 +229,7 @@ const Register: FunctionComponent<RegisterProps> = ({ setUserInfo }) => {
                         <div className="form-check">
                             <input className="form-check-input position-absolute" type="checkbox" onChange={() => setRoles(!roles)} id="invalidCheck"
                                 name="role"
-                                value={formik.values.role}/>
+                                value={formik.values.role} />
                             <label className="form-check-label " htmlFor="invalidCheck">Signup as business</label>
                         </div>
                     </div>
@@ -231,7 +239,7 @@ const Register: FunctionComponent<RegisterProps> = ({ setUserInfo }) => {
                     <button className="btn btn-danger col-md-4" onClick={() => navigate(-1)}>CANCLE</button>
                     <button className="btn btn-success col-md-4 " onClick={() => formik.resetForm()}><i className="fa-solid fa-rotate"></i></button>
                 </div>
-                                <Link to="/login">Already have user? Login here</Link>
+                <Link to="/login">Already have user? Login here</Link>
             </div>
         </>
     )

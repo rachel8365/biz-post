@@ -2,11 +2,8 @@ import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { checkUser } from "../services/usersService";
+import { checkUser, getTokenDetails } from "../services/usersService";
 import { errorMsg, successMsg } from "../services/feedbackService";
-import { userInfo } from "os";
-
-
 
 interface LoginProps {
     setUserInfo: Function
@@ -25,19 +22,25 @@ const Login: FunctionComponent<LoginProps> = ({ setUserInfo }) => {
         onSubmit: (values) => {
             checkUser(values)
                 .then((res) => {
-                    if (res.data.length) {
-                        navigate("/cards")
-                        successMsg(`Hi ${values.email} The connection was made successfully`)
-                        sessionStorage.setItem("userInfo", JSON.stringify({
-                            email: res.data[0].email,
-                            role: res.data[0].role,
-                            id: res.data[0].id,
-                        }))
-                        setUserInfo(JSON.parse(sessionStorage.getItem("userInfo") as string));
-                    }
-                    else errorMsg("Wrong email or password")
+                    navigate("/cards")
+                    successMsg(`Hi ${values.email} The connection was made successfully`)
+                    sessionStorage.setItem("token",
+                        JSON.stringify({
+                            token: res.data
+                        })
+                    )
+                    sessionStorage.setItem("userInfo", JSON.stringify({
+                        email: (getTokenDetails() as any).email,
+                        role: (getTokenDetails() as any).role,
+                        id: (getTokenDetails() as any)._id
+                    }))
+                    setUserInfo(JSON.parse(sessionStorage.getItem("userInfo") as string));
+
                 })
-                .catch((err) => console.log(err))
+                .catch((err) => {
+                    errorMsg("Wrong email or password!")
+                    console.log(err)
+                })
         },
     });
     return (
@@ -71,7 +74,7 @@ const Login: FunctionComponent<LoginProps> = ({ setUserInfo }) => {
                         <label htmlFor="floatingPassword">Password</label>
                         {formik.touched.password && formik.errors.password && (<p className="text-danger">{formik.errors.password}</p>)}
                     </div>
-                   
+
                     <button disabled={!formik.isValid || !formik.dirty} className="btn btn-success mt-3 w-100" type="submit">LOGIN</button>
                 </form>
                 <Link to="/register">New user? register here...</Link>
