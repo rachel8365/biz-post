@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup"
 import { addCard } from "../services/cardsService";
 import { errorMsg, successMsg } from "../services/feedbackService";
-
 interface AddCardProps { }
 const AddCard: FunctionComponent<AddCardProps> = () => {
     let navigate = useNavigate();
