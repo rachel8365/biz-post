@@ -18,20 +18,20 @@ In addition, in certain components such as the register, I exceeded the limit of
 Below are links to 3 types of users through which you can see the differences in permissions and display:
 Admin user type: email: rv8365@gmail.com
 password: 12345678
-Business user: email: yair@gmail.com
+Business user: email: shira@gmail.com
 password: 12345678
-Normal type of user: email: shira@gmail.com
+Normal type of user: email: yair@gmail.com
 password: 12345678
-
-
-
 
 ### Executing program
 
-To run the website, open a new terminal and run the following command:
-json-server --watch db.json --port 8000
-After that, the command should be:
-npm start
+To run the site, open a new terminal and enter the client folder by running the command cd bizPost-client
+And then run the npm start command
+Open another terminal and run the cd bizPost-server command
+and then the nodemon index.js command
+
+## Environment Variables
+
 
 
 
