@@ -31,6 +31,8 @@ Open another terminal and run the cd bizPost-server command
 and then the nodemon index.js command
 
 ## Environment Variables
+PORT = 8000
+
 
 
 
