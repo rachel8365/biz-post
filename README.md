@@ -32,12 +32,9 @@ and then the nodemon index.js command
 
 ## Environment Variables
 PORT = 8000
+DB = appears in the submission box
+jwtKey = appears in the submission box
 
-
-
-
-
-## Authors
 
 A fun test
 
